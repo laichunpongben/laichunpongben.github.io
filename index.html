@@ -2,9 +2,42 @@
     <head>
         <meta charset="utf-8"/>
         <title>maru</title>
-        <script type="text/javascript" src="ig.js"/>
+        <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.2.min.js"></script>
+        <script type="text/javascript" src="ig.min.js"></script>
     </head>
     <body>
-        
+        <script>
+            let clientid = '66ea02021755414e9a03048bdc5036a7';
+            let username = 'marutaro';
+            let num_photos = 4;
+            
+            $.ajax({ // the first ajax request returns the ID of user rudrastyh
+                url: 'https://api.instagram.com/v1/users/search',
+                dataType: 'jsonp',
+                type: 'GET',
+                data: {client_id: clientid, q: username}, // actually it is just the search by username
+                success: function(data){
+                    console.log(data);
+                    $.ajax({
+                        url: 'https://api.instagram.com/v1/users/' + data.data[0].id + '/media/recent', // specify the ID of the first found user
+                        dataType: 'jsonp',
+                        type: 'GET',
+                        data: {client_id: clientid, count: num_photos},
+                        success: function(data2){
+                            console.log(data2);
+                            for(x in data2.data){
+                                $('ul').append('<li><img src="'+data2.data[x].images.thumbnail.url+'"></li>');  
+                            }
+                            },
+                        error: function(data2){
+                            console.log(data2);
+                        }
+                    });
+                },
+                error: function(data){
+                    console.log(data);
+                }
+            });
+        </script>
     </body>
 </html>
